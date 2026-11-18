@@ -48,3 +48,16 @@ Row Level Security limits cloud records to the signed-in user. Each workspace is
 ## Current scope
 
 Personal and Company workspaces are selected before entering the app and can be switched from the sidebar. Each workspace uses a separate IndexedDB database on this browser; Company workspaces hold their own tasks, projects, notes, knowledge articles, files, bookmarks, attendance, timers and preferences. Workspaces are local to this browser and are not shared company accounts. Company role history and start/end dates appear with calendar tenure and live daily worked time on the dashboard. Tasks, projects with separate Features, Pages, Done and To do lists, notes, knowledge articles, bookmarks, local files, attendance check-in/out, time tracking, timezone-aware live clock, preferences and backup/restore use local persistence. The clock reads the device system time and formats it in the selected timezone; it does not query an internet time service. AI Assistant, app integrations, and Google login are pending. Calendar event creation, editing, deletion and daily/weekday/weekly repetition are implemented. Repeating events are stored as one series and rendered into matching calendar days.
+# Username authentication setup
+
+Username accounts use Supabase Auth for password hashing and sessions. The app never stores or sends plaintext passwords to a database table. Supabase Auth uses an internal, non-deliverable address for its email identifier; users only enter usernames in the app.
+
+Before username sign-up works on a Supabase project, apply the database migration and deploy the Edge Function:
+
+```sh
+npx supabase link --project-ref YOUR_PROJECT_REF
+npx supabase db push
+npx supabase functions deploy username-auth --no-verify-jwt
+```
+
+The project reference is the subdomain in the Supabase project URL. The Edge Function uses the platform-provided `SUPABASE_SERVICE_ROLE_KEY` server-side; do not put a service-role or secret key in `.env` or frontend code. Sign-in uses Supabase Auth directly and does not require the Edge Function. Usernames are 3–24 lowercase letters, numbers, dots, underscores, or hyphens; passwords must be 12–128 characters.
