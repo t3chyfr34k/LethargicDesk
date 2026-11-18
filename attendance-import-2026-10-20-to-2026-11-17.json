@@ -1,0 +1,703 @@
+{
+    "format":  "lethargic-desk-backup",
+    "version":  1,
+    "exported_at":  "2026-11-17T09:55:06.145Z",
+    "data":  {
+                 "attendance":  [
+                                    {
+                                        "id":  "b4d49f63-e32e-4f59-b4fd-3e825f3fc5f3",
+                                        "clock_in_at":  "2026-10-20T04:30:00.000Z",
+                                        "clock_out_at":  "2026-10-20T13:30:00.000Z",
+                                        "work_date":  "2026-10-20",
+                                        "note":  "Present",
+                                        "status":  "present",
+                                        "breaks":  [
+                                                       {
+                                                           "kind":  "morning_tea",
+                                                           "out_at":  "2026-10-20T06:00:00.000Z",
+                                                           "in_at":  "2026-10-20T06:30:00.000Z"
+                                                       },
+                                                       {
+                                                           "kind":  "lunch",
+                                                           "out_at":  "2026-10-20T08:30:00.000Z",
+                                                           "in_at":  "2026-10-20T09:30:00.000Z"
+                                                       },
+                                                       {
+                                                           "kind":  "afternoon_tea",
+                                                           "out_at":  "2026-10-20T11:30:00.000Z",
+                                                           "in_at":  "2026-10-20T12:00:00.000Z"
+                                                       }
+                                                   ],
+                                        "created_at":  "2026-11-17T09:55:06.145Z",
+                                        "updated_at":  "2026-11-17T09:55:06.145Z"
+                                    },
+                                    {
+                                        "id":  "195946d6-da98-4601-a1ce-cd0a83b1921e",
+                                        "clock_in_at":  "2026-10-21T04:30:00.000Z",
+                                        "clock_out_at":  "2026-10-21T13:30:00.000Z",
+                                        "work_date":  "2026-10-21",
+                                        "note":  "Present",
+                                        "status":  "present",
+                                        "breaks":  [
+                                                       {
+                                                           "kind":  "morning_tea",
+                                                           "out_at":  "2026-10-21T06:00:00.000Z",
+                                                           "in_at":  "2026-10-21T06:30:00.000Z"
+                                                       },
+                                                       {
+                                                           "kind":  "lunch",
+                                                           "out_at":  "2026-10-21T08:30:00.000Z",
+                                                           "in_at":  "2026-10-21T09:30:00.000Z"
+                                                       },
+                                                       {
+                                                           "kind":  "afternoon_tea",
+                                                           "out_at":  "2026-10-21T11:30:00.000Z",
+                                                           "in_at":  "2026-10-21T12:00:00.000Z"
+                                                       }
+                                                   ],
+                                        "created_at":  "2026-11-17T09:55:06.145Z",
+                                        "updated_at":  "2026-11-17T09:55:06.145Z"
+                                    },
+                                    {
+                                        "id":  "4e6e6aeb-f3e5-4af9-9c97-1259d543e928",
+                                        "clock_in_at":  "2026-10-22T04:30:00.000Z",
+                                        "clock_out_at":  "2026-10-22T13:30:00.000Z",
+                                        "work_date":  "2026-10-22",
+                                        "note":  "Present",
+                                        "status":  "present",
+                                        "breaks":  [
+                                                       {
+                                                           "kind":  "morning_tea",
+                                                           "out_at":  "2026-10-22T06:00:00.000Z",
+                                                           "in_at":  "2026-10-22T06:30:00.000Z"
+                                                       },
+                                                       {
+                                                           "kind":  "lunch",
+                                                           "out_at":  "2026-10-22T08:30:00.000Z",
+                                                           "in_at":  "2026-10-22T09:30:00.000Z"
+                                                       },
+                                                       {
+                                                           "kind":  "afternoon_tea",
+                                                           "out_at":  "2026-10-22T11:30:00.000Z",
+                                                           "in_at":  "2026-10-22T12:00:00.000Z"
+                                                       }
+                                                   ],
+                                        "created_at":  "2026-11-17T09:55:06.145Z",
+                                        "updated_at":  "2026-11-17T09:55:06.145Z"
+                                    },
+                                    {
+                                        "id":  "e0601074-7691-40f5-afb2-970afed7aa99",
+                                        "clock_in_at":  "2026-10-23T04:30:00.000Z",
+                                        "clock_out_at":  "2026-10-23T13:30:00.000Z",
+                                        "work_date":  "2026-10-23",
+                                        "note":  "Present",
+                                        "status":  "present",
+                                        "breaks":  [
+                                                       {
+                                                           "kind":  "morning_tea",
+                                                           "out_at":  "2026-10-23T06:00:00.000Z",
+                                                           "in_at":  "2026-10-23T06:30:00.000Z"
+                                                       },
+                                                       {
+                                                           "kind":  "lunch",
+                                                           "out_at":  "2026-10-23T08:30:00.000Z",
+                                                           "in_at":  "2026-10-23T09:30:00.000Z"
+                                                       },
+                                                       {
+                                                           "kind":  "afternoon_tea",
+                                                           "out_at":  "2026-10-23T11:30:00.000Z",
+                                                           "in_at":  "2026-10-23T12:00:00.000Z"
+                                                       }
+                                                   ],
+                                        "created_at":  "2026-11-17T09:55:06.145Z",
+                                        "updated_at":  "2026-11-17T09:55:06.145Z"
+                                    },
+                                    {
+                                        "id":  "7a6f1fc2-bb9f-4945-9717-d86ee330bdb4",
+                                        "clock_in_at":  "2026-10-24T04:30:00.000Z",
+                                        "clock_out_at":  "2026-10-24T13:30:00.000Z",
+                                        "work_date":  "2026-10-24",
+                                        "note":  "Present",
+                                        "status":  "present",
+                                        "breaks":  [
+                                                       {
+                                                           "kind":  "morning_tea",
+                                                           "out_at":  "2026-10-24T06:00:00.000Z",
+                                                           "in_at":  "2026-10-24T06:30:00.000Z"
+                                                       },
+                                                       {
+                                                           "kind":  "lunch",
+                                                           "out_at":  "2026-10-24T08:30:00.000Z",
+                                                           "in_at":  "2026-10-24T09:30:00.000Z"
+                                                       },
+                                                       {
+                                                           "kind":  "afternoon_tea",
+                                                           "out_at":  "2026-10-24T11:30:00.000Z",
+                                                           "in_at":  "2026-10-24T12:00:00.000Z"
+                                                       }
+                                                   ],
+                                        "created_at":  "2026-11-17T09:55:06.145Z",
+                                        "updated_at":  "2026-11-17T09:55:06.145Z"
+                                    },
+                                    {
+                                        "id":  "826010ea-3d06-493b-a681-24d3329d9f98",
+                                        "clock_in_at":  "2026-10-24T18:30:00.000Z",
+                                        "clock_out_at":  "2026-10-24T18:30:00.000Z",
+                                        "work_date":  "2026-10-25",
+                                        "note":  "Weekly holiday (Sunday)",
+                                        "status":  "holiday",
+                                        "breaks":  [
+
+                                                   ],
+                                        "created_at":  "2026-11-17T09:55:06.145Z",
+                                        "updated_at":  "2026-11-17T09:55:06.145Z"
+                                    },
+                                    {
+                                        "id":  "3f733d2e-cf7b-47d4-95e8-3cf9d94a6966",
+                                        "clock_in_at":  "2026-10-26T04:30:00.000Z",
+                                        "clock_out_at":  "2026-10-26T13:30:00.000Z",
+                                        "work_date":  "2026-10-26",
+                                        "note":  "Present",
+                                        "status":  "present",
+                                        "breaks":  [
+                                                       {
+                                                           "kind":  "morning_tea",
+                                                           "out_at":  "2026-10-26T06:00:00.000Z",
+                                                           "in_at":  "2026-10-26T06:30:00.000Z"
+                                                       },
+                                                       {
+                                                           "kind":  "lunch",
+                                                           "out_at":  "2026-10-26T08:30:00.000Z",
+                                                           "in_at":  "2026-10-26T09:30:00.000Z"
+                                                       },
+                                                       {
+                                                           "kind":  "afternoon_tea",
+                                                           "out_at":  "2026-10-26T11:30:00.000Z",
+                                                           "in_at":  "2026-10-26T12:00:00.000Z"
+                                                       }
+                                                   ],
+                                        "created_at":  "2026-11-17T09:55:06.145Z",
+                                        "updated_at":  "2026-11-17T09:55:06.145Z"
+                                    },
+                                    {
+                                        "id":  "c21d0c66-08ca-42ec-8c1e-48293f8f7b9b",
+                                        "clock_in_at":  "2026-10-27T04:30:00.000Z",
+                                        "clock_out_at":  "2026-10-27T13:30:00.000Z",
+                                        "work_date":  "2026-10-27",
+                                        "note":  "Present",
+                                        "status":  "present",
+                                        "breaks":  [
+                                                       {
+                                                           "kind":  "morning_tea",
+                                                           "out_at":  "2026-10-27T06:00:00.000Z",
+                                                           "in_at":  "2026-10-27T06:30:00.000Z"
+                                                       },
+                                                       {
+                                                           "kind":  "lunch",
+                                                           "out_at":  "2026-10-27T08:30:00.000Z",
+                                                           "in_at":  "2026-10-27T09:30:00.000Z"
+                                                       },
+                                                       {
+                                                           "kind":  "afternoon_tea",
+                                                           "out_at":  "2026-10-27T11:30:00.000Z",
+                                                           "in_at":  "2026-10-27T12:00:00.000Z"
+                                                       }
+                                                   ],
+                                        "created_at":  "2026-11-17T09:55:06.145Z",
+                                        "updated_at":  "2026-11-17T09:55:06.145Z"
+                                    },
+                                    {
+                                        "id":  "70649114-99ec-48ae-9e4c-e1f3cc0f54a4",
+                                        "clock_in_at":  "2026-10-28T04:30:00.000Z",
+                                        "clock_out_at":  "2026-10-28T13:30:00.000Z",
+                                        "work_date":  "2026-10-28",
+                                        "note":  "Present",
+                                        "status":  "present",
+                                        "breaks":  [
+                                                       {
+                                                           "kind":  "morning_tea",
+                                                           "out_at":  "2026-10-28T06:00:00.000Z",
+                                                           "in_at":  "2026-10-28T06:30:00.000Z"
+                                                       },
+                                                       {
+                                                           "kind":  "lunch",
+                                                           "out_at":  "2026-10-28T08:30:00.000Z",
+                                                           "in_at":  "2026-10-28T09:30:00.000Z"
+                                                       },
+                                                       {
+                                                           "kind":  "afternoon_tea",
+                                                           "out_at":  "2026-10-28T11:30:00.000Z",
+                                                           "in_at":  "2026-10-28T12:00:00.000Z"
+                                                       }
+                                                   ],
+                                        "created_at":  "2026-11-17T09:55:06.145Z",
+                                        "updated_at":  "2026-11-17T09:55:06.145Z"
+                                    },
+                                    {
+                                        "id":  "c3b83303-d4fe-4662-888d-73a71b406de6",
+                                        "clock_in_at":  "2026-10-29T04:30:00.000Z",
+                                        "clock_out_at":  "2026-10-29T13:30:00.000Z",
+                                        "work_date":  "2026-10-29",
+                                        "note":  "Present",
+                                        "status":  "present",
+                                        "breaks":  [
+                                                       {
+                                                           "kind":  "morning_tea",
+                                                           "out_at":  "2026-10-29T06:00:00.000Z",
+                                                           "in_at":  "2026-10-29T06:30:00.000Z"
+                                                       },
+                                                       {
+                                                           "kind":  "lunch",
+                                                           "out_at":  "2026-10-29T08:30:00.000Z",
+                                                           "in_at":  "2026-10-29T09:30:00.000Z"
+                                                       },
+                                                       {
+                                                           "kind":  "afternoon_tea",
+                                                           "out_at":  "2026-10-29T11:30:00.000Z",
+                                                           "in_at":  "2026-10-29T12:00:00.000Z"
+                                                       }
+                                                   ],
+                                        "created_at":  "2026-11-17T09:55:06.145Z",
+                                        "updated_at":  "2026-11-17T09:55:06.145Z"
+                                    },
+                                    {
+                                        "id":  "fe9c0e6f-b202-42d6-a3ce-d2e7f6d76631",
+                                        "clock_in_at":  "2026-10-30T04:30:00.000Z",
+                                        "clock_out_at":  "2026-10-30T13:30:00.000Z",
+                                        "work_date":  "2026-10-30",
+                                        "note":  "Present",
+                                        "status":  "present",
+                                        "breaks":  [
+                                                       {
+                                                           "kind":  "morning_tea",
+                                                           "out_at":  "2026-10-30T06:00:00.000Z",
+                                                           "in_at":  "2026-10-30T06:30:00.000Z"
+                                                       },
+                                                       {
+                                                           "kind":  "lunch",
+                                                           "out_at":  "2026-10-30T08:30:00.000Z",
+                                                           "in_at":  "2026-10-30T09:30:00.000Z"
+                                                       },
+                                                       {
+                                                           "kind":  "afternoon_tea",
+                                                           "out_at":  "2026-10-30T11:30:00.000Z",
+                                                           "in_at":  "2026-10-30T12:00:00.000Z"
+                                                       }
+                                                   ],
+                                        "created_at":  "2026-11-17T09:55:06.145Z",
+                                        "updated_at":  "2026-11-17T09:55:06.145Z"
+                                    },
+                                    {
+                                        "id":  "e20ef56a-e39e-4113-96d3-2d8210cd01e4",
+                                        "clock_in_at":  "2026-10-31T04:30:00.000Z",
+                                        "clock_out_at":  "2026-10-31T13:30:00.000Z",
+                                        "work_date":  "2026-10-31",
+                                        "note":  "Present",
+                                        "status":  "present",
+                                        "breaks":  [
+                                                       {
+                                                           "kind":  "morning_tea",
+                                                           "out_at":  "2026-10-31T06:00:00.000Z",
+                                                           "in_at":  "2026-10-31T06:30:00.000Z"
+                                                       },
+                                                       {
+                                                           "kind":  "lunch",
+                                                           "out_at":  "2026-10-31T08:30:00.000Z",
+                                                           "in_at":  "2026-10-31T09:30:00.000Z"
+                                                       },
+                                                       {
+                                                           "kind":  "afternoon_tea",
+                                                           "out_at":  "2026-10-31T11:30:00.000Z",
+                                                           "in_at":  "2026-10-31T12:00:00.000Z"
+                                                       }
+                                                   ],
+                                        "created_at":  "2026-11-17T09:55:06.145Z",
+                                        "updated_at":  "2026-11-17T09:55:06.145Z"
+                                    },
+                                    {
+                                        "id":  "dda46dcd-513c-40f8-83b8-5fd2293823f1",
+                                        "clock_in_at":  "2026-10-31T18:30:00.000Z",
+                                        "clock_out_at":  "2026-10-31T18:30:00.000Z",
+                                        "work_date":  "2026-11-01",
+                                        "note":  "Weekly holiday (Sunday)",
+                                        "status":  "holiday",
+                                        "breaks":  [
+
+                                                   ],
+                                        "created_at":  "2026-11-17T09:55:06.145Z",
+                                        "updated_at":  "2026-11-17T09:55:06.145Z"
+                                    },
+                                    {
+                                        "id":  "f1865962-abaa-460f-bab8-7d8dbd36b936",
+                                        "clock_in_at":  "2026-11-02T04:30:00.000Z",
+                                        "clock_out_at":  "2026-11-02T13:30:00.000Z",
+                                        "work_date":  "2026-11-02",
+                                        "note":  "Present",
+                                        "status":  "present",
+                                        "breaks":  [
+                                                       {
+                                                           "kind":  "morning_tea",
+                                                           "out_at":  "2026-11-02T06:00:00.000Z",
+                                                           "in_at":  "2026-11-02T06:30:00.000Z"
+                                                       },
+                                                       {
+                                                           "kind":  "lunch",
+                                                           "out_at":  "2026-11-02T08:30:00.000Z",
+                                                           "in_at":  "2026-11-02T09:30:00.000Z"
+                                                       },
+                                                       {
+                                                           "kind":  "afternoon_tea",
+                                                           "out_at":  "2026-11-02T11:30:00.000Z",
+                                                           "in_at":  "2026-11-02T12:00:00.000Z"
+                                                       }
+                                                   ],
+                                        "created_at":  "2026-11-17T09:55:06.145Z",
+                                        "updated_at":  "2026-11-17T09:55:06.145Z"
+                                    },
+                                    {
+                                        "id":  "1f7ca5bc-a98e-4761-bda3-2a5f5739ed53",
+                                        "clock_in_at":  "2026-11-03T04:30:00.000Z",
+                                        "clock_out_at":  "2026-11-03T13:30:00.000Z",
+                                        "work_date":  "2026-11-03",
+                                        "note":  "Present",
+                                        "status":  "present",
+                                        "breaks":  [
+                                                       {
+                                                           "kind":  "morning_tea",
+                                                           "out_at":  "2026-11-03T06:00:00.000Z",
+                                                           "in_at":  "2026-11-03T06:30:00.000Z"
+                                                       },
+                                                       {
+                                                           "kind":  "lunch",
+                                                           "out_at":  "2026-11-03T08:30:00.000Z",
+                                                           "in_at":  "2026-11-03T09:30:00.000Z"
+                                                       },
+                                                       {
+                                                           "kind":  "afternoon_tea",
+                                                           "out_at":  "2026-11-03T11:30:00.000Z",
+                                                           "in_at":  "2026-11-03T12:00:00.000Z"
+                                                       }
+                                                   ],
+                                        "created_at":  "2026-11-17T09:55:06.145Z",
+                                        "updated_at":  "2026-11-17T09:55:06.145Z"
+                                    },
+                                    {
+                                        "id":  "d5d60dff-0a86-4cfc-b00c-3a4a1f2266f4",
+                                        "clock_in_at":  "2026-11-04T04:30:00.000Z",
+                                        "clock_out_at":  "2026-11-04T13:30:00.000Z",
+                                        "work_date":  "2026-11-04",
+                                        "note":  "Present",
+                                        "status":  "present",
+                                        "breaks":  [
+                                                       {
+                                                           "kind":  "morning_tea",
+                                                           "out_at":  "2026-11-04T06:00:00.000Z",
+                                                           "in_at":  "2026-11-04T06:30:00.000Z"
+                                                       },
+                                                       {
+                                                           "kind":  "lunch",
+                                                           "out_at":  "2026-11-04T08:30:00.000Z",
+                                                           "in_at":  "2026-11-04T09:30:00.000Z"
+                                                       },
+                                                       {
+                                                           "kind":  "afternoon_tea",
+                                                           "out_at":  "2026-11-04T11:30:00.000Z",
+                                                           "in_at":  "2026-11-04T12:00:00.000Z"
+                                                       }
+                                                   ],
+                                        "created_at":  "2026-11-17T09:55:06.145Z",
+                                        "updated_at":  "2026-11-17T09:55:06.145Z"
+                                    },
+                                    {
+                                        "id":  "a4ef7c77-8626-4350-9b0f-0844aeab372c",
+                                        "clock_in_at":  "2026-11-05T04:30:00.000Z",
+                                        "clock_out_at":  "2026-11-05T13:30:00.000Z",
+                                        "work_date":  "2026-11-05",
+                                        "note":  "Present",
+                                        "status":  "present",
+                                        "breaks":  [
+                                                       {
+                                                           "kind":  "morning_tea",
+                                                           "out_at":  "2026-11-05T06:00:00.000Z",
+                                                           "in_at":  "2026-11-05T06:30:00.000Z"
+                                                       },
+                                                       {
+                                                           "kind":  "lunch",
+                                                           "out_at":  "2026-11-05T08:30:00.000Z",
+                                                           "in_at":  "2026-11-05T09:30:00.000Z"
+                                                       },
+                                                       {
+                                                           "kind":  "afternoon_tea",
+                                                           "out_at":  "2026-11-05T11:30:00.000Z",
+                                                           "in_at":  "2026-11-05T12:00:00.000Z"
+                                                       }
+                                                   ],
+                                        "created_at":  "2026-11-17T09:55:06.145Z",
+                                        "updated_at":  "2026-11-17T09:55:06.145Z"
+                                    },
+                                    {
+                                        "id":  "9c230d06-3485-4c12-810c-298042ddf200",
+                                        "clock_in_at":  "2026-11-06T04:30:00.000Z",
+                                        "clock_out_at":  "2026-11-06T13:30:00.000Z",
+                                        "work_date":  "2026-11-06",
+                                        "note":  "Present",
+                                        "status":  "present",
+                                        "breaks":  [
+                                                       {
+                                                           "kind":  "morning_tea",
+                                                           "out_at":  "2026-11-06T06:00:00.000Z",
+                                                           "in_at":  "2026-11-06T06:30:00.000Z"
+                                                       },
+                                                       {
+                                                           "kind":  "lunch",
+                                                           "out_at":  "2026-11-06T08:30:00.000Z",
+                                                           "in_at":  "2026-11-06T09:30:00.000Z"
+                                                       },
+                                                       {
+                                                           "kind":  "afternoon_tea",
+                                                           "out_at":  "2026-11-06T11:30:00.000Z",
+                                                           "in_at":  "2026-11-06T12:00:00.000Z"
+                                                       }
+                                                   ],
+                                        "created_at":  "2026-11-17T09:55:06.145Z",
+                                        "updated_at":  "2026-11-17T09:55:06.145Z"
+                                    },
+                                    {
+                                        "id":  "47e8493d-02ae-433b-8219-c5ce525b25bd",
+                                        "clock_in_at":  "2026-11-06T18:30:00.000Z",
+                                        "clock_out_at":  "2026-11-06T18:30:00.000Z",
+                                        "work_date":  "2026-11-07",
+                                        "note":  "Company declared holiday - Diwali",
+                                        "status":  "holiday",
+                                        "breaks":  [
+
+                                                   ],
+                                        "created_at":  "2026-11-17T09:55:06.145Z",
+                                        "updated_at":  "2026-11-17T09:55:06.145Z"
+                                    },
+                                    {
+                                        "id":  "c999d650-2027-43e6-8bc1-33f2d02058cf",
+                                        "clock_in_at":  "2026-11-07T18:30:00.000Z",
+                                        "clock_out_at":  "2026-11-07T18:30:00.000Z",
+                                        "work_date":  "2026-11-08",
+                                        "note":  "Company declared holiday - Diwali",
+                                        "status":  "holiday",
+                                        "breaks":  [
+
+                                                   ],
+                                        "created_at":  "2026-11-17T09:55:06.145Z",
+                                        "updated_at":  "2026-11-17T09:55:06.145Z"
+                                    },
+                                    {
+                                        "id":  "03b16551-a5ae-4657-b58b-d29643518222",
+                                        "clock_in_at":  "2026-11-08T18:30:00.000Z",
+                                        "clock_out_at":  "2026-11-08T18:30:00.000Z",
+                                        "work_date":  "2026-11-09",
+                                        "note":  "Company declared holiday - Diwali",
+                                        "status":  "holiday",
+                                        "breaks":  [
+
+                                                   ],
+                                        "created_at":  "2026-11-17T09:55:06.145Z",
+                                        "updated_at":  "2026-11-17T09:55:06.145Z"
+                                    },
+                                    {
+                                        "id":  "bdfd543d-c7ae-4f63-9e39-7b083a32ff6e",
+                                        "clock_in_at":  "2026-11-10T04:45:00.000Z",
+                                        "clock_out_at":  "2026-11-10T13:50:00.000Z",
+                                        "work_date":  "2026-11-10",
+                                        "note":  "Present",
+                                        "status":  "present",
+                                        "breaks":  [
+                                                       {
+                                                           "kind":  "morning_tea",
+                                                           "out_at":  "2026-11-10T06:00:00.000Z",
+                                                           "in_at":  "2026-11-10T06:30:00.000Z"
+                                                       },
+                                                       {
+                                                           "kind":  "lunch",
+                                                           "out_at":  "2026-11-10T08:30:00.000Z",
+                                                           "in_at":  "2026-11-10T09:30:00.000Z"
+                                                       },
+                                                       {
+                                                           "kind":  "afternoon_tea",
+                                                           "out_at":  "2026-11-10T11:30:00.000Z",
+                                                           "in_at":  "2026-11-10T12:00:00.000Z"
+                                                       }
+                                                   ],
+                                        "created_at":  "2026-11-17T09:55:06.145Z",
+                                        "updated_at":  "2026-11-17T09:55:06.145Z"
+                                    },
+                                    {
+                                        "id":  "01edeb40-3789-4a01-9fba-64b7ba38df73",
+                                        "clock_in_at":  "2026-11-11T04:45:00.000Z",
+                                        "clock_out_at":  "2026-11-11T13:50:00.000Z",
+                                        "work_date":  "2026-11-11",
+                                        "note":  "Present",
+                                        "status":  "present",
+                                        "breaks":  [
+                                                       {
+                                                           "kind":  "morning_tea",
+                                                           "out_at":  "2026-11-11T06:00:00.000Z",
+                                                           "in_at":  "2026-11-11T06:30:00.000Z"
+                                                       },
+                                                       {
+                                                           "kind":  "lunch",
+                                                           "out_at":  "2026-11-11T08:30:00.000Z",
+                                                           "in_at":  "2026-11-11T09:30:00.000Z"
+                                                       },
+                                                       {
+                                                           "kind":  "afternoon_tea",
+                                                           "out_at":  "2026-11-11T11:30:00.000Z",
+                                                           "in_at":  "2026-11-11T12:00:00.000Z"
+                                                       }
+                                                   ],
+                                        "created_at":  "2026-11-17T09:55:06.145Z",
+                                        "updated_at":  "2026-11-17T09:55:06.145Z"
+                                    },
+                                    {
+                                        "id":  "6b5e1af2-c6f0-4d5f-932a-1fab526e311e",
+                                        "clock_in_at":  "2026-11-12T04:45:00.000Z",
+                                        "clock_out_at":  "2026-11-12T13:50:00.000Z",
+                                        "work_date":  "2026-11-12",
+                                        "note":  "Present",
+                                        "status":  "present",
+                                        "breaks":  [
+                                                       {
+                                                           "kind":  "morning_tea",
+                                                           "out_at":  "2026-11-12T06:00:00.000Z",
+                                                           "in_at":  "2026-11-12T06:30:00.000Z"
+                                                       },
+                                                       {
+                                                           "kind":  "lunch",
+                                                           "out_at":  "2026-11-12T08:30:00.000Z",
+                                                           "in_at":  "2026-11-12T09:30:00.000Z"
+                                                       },
+                                                       {
+                                                           "kind":  "afternoon_tea",
+                                                           "out_at":  "2026-11-12T11:30:00.000Z",
+                                                           "in_at":  "2026-11-12T12:00:00.000Z"
+                                                       }
+                                                   ],
+                                        "created_at":  "2026-11-17T09:55:06.145Z",
+                                        "updated_at":  "2026-11-17T09:55:06.145Z"
+                                    },
+                                    {
+                                        "id":  "906515c0-79ba-4786-a292-38f56bc3c5ff",
+                                        "clock_in_at":  "2026-11-13T04:45:00.000Z",
+                                        "clock_out_at":  "2026-11-13T13:50:00.000Z",
+                                        "work_date":  "2026-11-13",
+                                        "note":  "Present",
+                                        "status":  "present",
+                                        "breaks":  [
+                                                       {
+                                                           "kind":  "morning_tea",
+                                                           "out_at":  "2026-11-13T06:00:00.000Z",
+                                                           "in_at":  "2026-11-13T06:30:00.000Z"
+                                                       },
+                                                       {
+                                                           "kind":  "lunch",
+                                                           "out_at":  "2026-11-13T08:30:00.000Z",
+                                                           "in_at":  "2026-11-13T09:30:00.000Z"
+                                                       },
+                                                       {
+                                                           "kind":  "afternoon_tea",
+                                                           "out_at":  "2026-11-13T11:30:00.000Z",
+                                                           "in_at":  "2026-11-13T12:00:00.000Z"
+                                                       }
+                                                   ],
+                                        "created_at":  "2026-11-17T09:55:06.145Z",
+                                        "updated_at":  "2026-11-17T09:55:06.145Z"
+                                    },
+                                    {
+                                        "id":  "0f0e7a3f-1344-4ec3-b4aa-094e353e4447",
+                                        "clock_in_at":  "2026-11-14T04:45:00.000Z",
+                                        "clock_out_at":  "2026-11-14T13:50:00.000Z",
+                                        "work_date":  "2026-11-14",
+                                        "note":  "Present",
+                                        "status":  "present",
+                                        "breaks":  [
+                                                       {
+                                                           "kind":  "morning_tea",
+                                                           "out_at":  "2026-11-14T06:00:00.000Z",
+                                                           "in_at":  "2026-11-14T06:30:00.000Z"
+                                                       },
+                                                       {
+                                                           "kind":  "lunch",
+                                                           "out_at":  "2026-11-14T08:30:00.000Z",
+                                                           "in_at":  "2026-11-14T09:30:00.000Z"
+                                                       },
+                                                       {
+                                                           "kind":  "afternoon_tea",
+                                                           "out_at":  "2026-11-14T11:30:00.000Z",
+                                                           "in_at":  "2026-11-14T12:00:00.000Z"
+                                                       }
+                                                   ],
+                                        "created_at":  "2026-11-17T09:55:06.145Z",
+                                        "updated_at":  "2026-11-17T09:55:06.145Z"
+                                    },
+                                    {
+                                        "id":  "084c6be8-b90e-4126-a998-2f7a6f35cdcc",
+                                        "clock_in_at":  "2026-11-14T18:30:00.000Z",
+                                        "clock_out_at":  "2026-11-14T18:30:00.000Z",
+                                        "work_date":  "2026-11-15",
+                                        "note":  "Weekly holiday (Sunday)",
+                                        "status":  "holiday",
+                                        "breaks":  [
+
+                                                   ],
+                                        "created_at":  "2026-11-17T09:55:06.145Z",
+                                        "updated_at":  "2026-11-17T09:55:06.145Z"
+                                    },
+                                    {
+                                        "id":  "93559563-dc76-4f32-a186-5d491fc2abcf",
+                                        "clock_in_at":  "2026-11-16T04:45:00.000Z",
+                                        "clock_out_at":  "2026-11-16T14:30:00.000Z",
+                                        "work_date":  "2026-11-16",
+                                        "note":  "Present",
+                                        "status":  "present",
+                                        "breaks":  [
+                                                       {
+                                                           "kind":  "morning_tea",
+                                                           "out_at":  "2026-11-16T06:00:00.000Z",
+                                                           "in_at":  "2026-11-16T06:30:00.000Z"
+                                                       },
+                                                       {
+                                                           "kind":  "lunch",
+                                                           "out_at":  "2026-11-16T08:30:00.000Z",
+                                                           "in_at":  "2026-11-16T09:30:00.000Z"
+                                                       },
+                                                       {
+                                                           "kind":  "afternoon_tea",
+                                                           "out_at":  "2026-11-16T11:30:00.000Z",
+                                                           "in_at":  "2026-11-16T12:00:00.000Z"
+                                                       }
+                                                   ],
+                                        "created_at":  "2026-11-17T09:55:06.145Z",
+                                        "updated_at":  "2026-11-17T09:55:06.145Z"
+                                    },
+                                    {
+                                        "id":  "32c21fa1-8730-4916-8a75-85db23ce1adc",
+                                        "clock_in_at":  "2026-11-17T04:45:00.000Z",
+                                        "clock_out_at":  null,
+                                        "work_date":  "2026-11-17",
+                                        "note":  "Present",
+                                        "status":  "present",
+                                        "breaks":  [
+                                                       {
+                                                           "kind":  "morning_tea",
+                                                           "out_at":  "2026-11-17T06:00:00.000Z",
+                                                           "in_at":  "2026-11-17T06:30:00.000Z"
+                                                       },
+                                                       {
+                                                           "kind":  "lunch",
+                                                           "out_at":  "2026-11-17T08:30:00.000Z",
+                                                           "in_at":  "2026-11-17T09:30:00.000Z"
+                                                       }
+                                                   ],
+                                        "created_at":  "2026-11-17T09:55:06.145Z",
+                                        "updated_at":  "2026-11-17T10:16:58.968Z"
+                                    }
+                                ]
+             }
+}
