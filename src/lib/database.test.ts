@@ -21,7 +21,7 @@ describe('local persistence workflows',()=>{
   })
   it('opens the current versioned database schema without discarding data',async()=>{
     await clockIn('Asia/Kolkata')
-    expect(db.verno).toBe(3)
+    expect(db.verno).toBe(4)
     expect((await getAttendanceRecords()).length).toBe(1)
   })
   it('enforces break out/in and prevents checkout during an open break',async()=>{

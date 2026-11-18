@@ -1,6 +1,6 @@
 import Dexie, { type Table } from 'dexie'
 import type { AttendanceRecord, Bookmark, CalendarEvent, DailyPlan, FocusSession, KnowledgeArticle, LocalFile, Milestone, Note, Preferences, Project, Subtask, Tag, Task, TimeEntry } from '../types'
-import { getWorkspaceDatabaseName } from './workspaces'
+import { getWorkspaceDatabaseName, getWorkspaceStorageScope, setWorkspaceStorageScope } from './workspaces'
 
 export class WorkspaceDatabase extends Dexie {
   tasks!: Table<Task, 'id'>; projects!: Table<Project, 'id'>; subtasks!: Table<Subtask, 'id'>
@@ -18,7 +18,7 @@ export class WorkspaceDatabase extends Dexie {
     this.version(4).stores({ tasks:'id, created_at, updated_at, due_date, status, priority, project_id, deleted_at', projects:'id, created_at, updated_at, status, deleted_at', subtasks:'id, task_id, created_at, deleted_at', milestones:'id, project_id, due_date, deleted_at', calendarEvents:'id, starts_at, ends_at, deleted_at', notes:'id, created_at, updated_at, pinned, archived, deleted_at', knowledgeArticles:'id, category, updated_at, favorite, deleted_at', bookmarks:'id, url, category, favorite, deleted_at', files:'id, name, category, created_at, deleted_at', timeEntries:'id, started_at, ended_at, project_id, task_id, deleted_at', focusSessions:'id, started_at, ended_at, deleted_at', dailyPlans:'id, date, deleted_at', tags:'id, name, deleted_at', preferences:'id', attendance:'id, clock_in_at, clock_out_at, work_date, created_at', syncQueue:'id, workspace_id, collection, record_id, operation, created_at' })
   }
 }
-export const db = new WorkspaceDatabase()
+export let db = new WorkspaceDatabase()
 export const newId = () => crypto.randomUUID()
 export const stamp = () => new Date().toISOString()
 
@@ -32,11 +32,36 @@ export class DexieRepository<T extends { id: string }> implements Repository<T> 
   async save(value: T) { await this.table.put(value) }
   async remove(id: string) { await this.table.delete(id) }
 }
-export const repositories = {
-  tasks: new DexieRepository<Task>(db.tasks), projects: new DexieRepository<Project>(db.projects), notes: new DexieRepository<Note>(db.notes),
-  calendar: new DexieRepository<CalendarEvent>(db.calendarEvents), bookmarks: new DexieRepository<Bookmark>(db.bookmarks), files: new DexieRepository<LocalFile>(db.files), timeEntries: new DexieRepository<TimeEntry>(db.timeEntries),
-  knowledge: new DexieRepository<KnowledgeArticle>(db.knowledgeArticles), settings: new DexieRepository<Preferences>(db.preferences),
-  attendance: new DexieRepository<AttendanceRecord>(db.attendance),
+function makeRepositories(database: WorkspaceDatabase) {
+  return {
+    tasks: new DexieRepository<Task>(database.tasks), projects: new DexieRepository<Project>(database.projects), notes: new DexieRepository<Note>(database.notes),
+    calendar: new DexieRepository<CalendarEvent>(database.calendarEvents), bookmarks: new DexieRepository<Bookmark>(database.bookmarks), files: new DexieRepository<LocalFile>(database.files), timeEntries: new DexieRepository<TimeEntry>(database.timeEntries),
+    knowledge: new DexieRepository<KnowledgeArticle>(database.knowledgeArticles), settings: new DexieRepository<Preferences>(database.preferences),
+    attendance: new DexieRepository<AttendanceRecord>(database.attendance),
+  }
+}
+export let repositories = makeRepositories(db)
+let databaseReady: Promise<void> | null = null
+let accountScopeChange: Promise<void> = Promise.resolve()
+
+export function setDatabaseAccountScope(userId: string | null): Promise<void> {
+  const nextScope = userId ? `user:${userId}` : 'offline'
+  const change = async () => {
+    if (getWorkspaceStorageScope() === nextScope) {
+      if (databaseReady) await databaseReady
+      else databaseReady = db.open().then(() => undefined)
+      return
+    }
+    db.close()
+    setWorkspaceStorageScope(userId)
+    db = new WorkspaceDatabase()
+    repositories = makeRepositories(db)
+    databaseReady = db.open().then(() => undefined)
+    await databaseReady
+  }
+  const result = accountScopeChange.then(change)
+  accountScopeChange = result.then(() => undefined, () => undefined)
+  return result
 }
 
 export async function startTimeEntry(input: { project_id?: string | null; task_id?: string | null; description: string }) {

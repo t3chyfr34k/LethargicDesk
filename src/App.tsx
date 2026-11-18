@@ -9,22 +9,22 @@ import {
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { format, isToday, isValid, parseISO, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay } from 'date-fns'
-import { clockIn, clockOut, db, endAttendanceBreak, getActiveTimeEntry, getAttendanceRecords, getTimeEntries, markAttendanceAbsent, newId, repositories, skipAttendanceBreak, startAttendanceBreak, startTimeEntry, stamp, stopTimeEntry } from './lib/database'
+import { clockIn, clockOut, db, endAttendanceBreak, getActiveTimeEntry, getAttendanceRecords, getTimeEntries, markAttendanceAbsent, newId, repositories, setDatabaseAccountScope, skipAttendanceBreak, startAttendanceBreak, startTimeEntry, stamp, stopTimeEntry } from './lib/database'
 import { completionRate, isOverdue, projectProgress, validateEvent } from './lib/logic'
 import type { AttendanceRecord, CalendarEvent, Task, Project, Note, Bookmark as BookmarkType, KnowledgeArticle, LocalFile, Preferences } from './types'
-import { createCompanyWorkspace, getActiveWorkspace, getEmploymentTenure, getWorkspaces, saveWorkspace, selectWorkspace } from './lib/workspaces'
+import { createCompanyWorkspace, getActiveWorkspace, getEmploymentTenure, getWorkspaceStorageScope, getWorkspaces, saveWorkspace, selectWorkspace } from './lib/workspaces'
 import type { EmploymentRole, Workspace } from './lib/workspaces'
 import { supabase } from './lib/supabase'
 import { normalizeUsername, usernameAuthEmail } from './lib/username-auth'
-import { requestCloudSync, startCloudSync } from './lib/cloud-sync'
-import type { User } from '@supabase/supabase-js'
+import { requestCloudSync, startCloudSync, stopCloudSync } from './lib/cloud-sync'
+import type { Session, User } from '@supabase/supabase-js'
 
 function formatZonedClock(date:Date,timezone:string,timeFormat:Preferences['time_format']='24h'){try{return new Intl.DateTimeFormat(undefined,{timeZone:timezone,hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:timeFormat==='12h'}).format(date)}catch{return new Intl.DateTimeFormat(undefined,{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:timeFormat==='12h'}).format(date)}}
 function formatZonedDate(date:Date,timezone:string,dateFormat='MMM d, yyyy'){try{const parts=new Intl.DateTimeFormat('en-US',{timeZone:timezone,year:'numeric',month:dateFormat==='yyyy-MM-dd'?'2-digit':'short',day:'2-digit'}).formatToParts(date),get=(key:string)=>parts.find(p=>p.type===key)?.value??'';if(dateFormat==='yyyy-MM-dd')return `${get('year')}-${get('month')}-${get('day')}`;if(dateFormat==='dd/MM/yyyy')return `${get('day')}/${get('month')}/${get('year')}`;return `${get('month')} ${Number(get('day'))}, ${get('year')}`}catch{return new Intl.DateTimeFormat(undefined,{dateStyle:'medium'}).format(date)}}
 function validTaskDate(value:string|null|undefined):Date|null { if(!value || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return null; const parsed=parseISO(value); return isValid(parsed) && format(parsed,'yyyy-MM-dd')===value ? parsed : null }
 type Section = 'Overview' | 'My Day' | 'Calendar' | 'Tasks' | 'Projects' | 'Notes' | 'Knowledge Base' | 'Files' | 'Bookmarks' | 'Time Tracker' | 'Attendance' | 'Analytics' | 'AI Assistant' | 'Daily Briefing' | 'Preferences' | 'Integrations' | 'Security' | 'Workspaces'
-const workspaceEntryKey='lethargic-desk:entered-workspace:v1'
-function hasEnteredWorkspace(){try{return sessionStorage.getItem(workspaceEntryKey)==='true'}catch{return false}}
+const workspaceEntryKey=(userId:string|null)=>`lethargic-desk:entered-workspace:v1:${userId??'offline'}`
+function hasEnteredWorkspace(userId:string|null){try{return sessionStorage.getItem(workspaceEntryKey(userId))==='true'}catch{return false}}
 
 const navGroups: { label: string; items: { label: Section; icon: typeof Grid2X2 }[] }[] = [
   { label: 'WORKSPACE', items: [
@@ -64,17 +64,18 @@ function App() {
   const [timeFormat,setTimeFormat]=useState<Preferences['time_format']>('24h')
   const [workspaces,setWorkspaces]=useState<Workspace[]>(()=>getWorkspaces())
   const [activeWorkspace,setActiveWorkspace]=useState<Workspace>(()=>getActiveWorkspace())
-  const [workspacePickerOpen,setWorkspacePickerOpen]=useState(()=>!hasEnteredWorkspace())
+  const [workspacePickerOpen,setWorkspacePickerOpen]=useState(()=>!hasEnteredWorkspace(null))
   const [clockNow, setClockNow] = useState<Date | null>(null)
   const [cloudUser,setCloudUser]=useState<User|null>(null)
   const [cloudSyncStatus,setCloudSyncStatus]=useState<'syncing'|'synced'|'offline'|'error'>('syncing')
   const [cloudAuthReady,setCloudAuthReady]=useState(!supabase)
   const [offlineMode,setOfflineMode]=useState(false)
   const location = useLocation()
-  const handleSelectWorkspace=(workspace:Workspace)=>{selectWorkspace(workspace.id);try{sessionStorage.setItem(workspaceEntryKey,'true')}catch{setWorkspacePickerOpen(false)};window.location.reload()}
+  const handleSelectWorkspace=(workspace:Workspace)=>{selectWorkspace(workspace.id);try{sessionStorage.setItem(workspaceEntryKey(cloudUser?.id??null),'true')}catch{setWorkspacePickerOpen(false)};window.location.reload()}
   const handleCreateWorkspace=(name:string,role:string,startDate:string)=>{const created=createCompanyWorkspace(name,role,startDate);setWorkspaces(getWorkspaces());requestCloudSync();return created}
+  const handleSignupAccount=async(userId:string)=>{await setDatabaseAccountScope(userId);setWorkspaces(getWorkspaces());requestCloudSync()}
   const handleSaveWorkspace=(workspace:Workspace)=>{saveWorkspace(workspace);const next=getWorkspaces();setWorkspaces(next);setActiveWorkspace(next.find(item=>item.id===workspace.id)??workspace);requestCloudSync()}
-  const handleSignOut=async()=>{if(supabase){const {error}=await supabase.auth.signOut();if(error){setError(`Sign out failed: ${error.message}`);return}}try{sessionStorage.removeItem(workspaceEntryKey)}catch{}setProfileMenuOpen(false);setOfflineMode(false)}
+  const handleSignOut=async()=>{if(supabase){const {error}=await supabase.auth.signOut();if(error){setError(`Sign out failed: ${error.message}`);return}}if(cloudUser)try{sessionStorage.removeItem(workspaceEntryKey(cloudUser.id))}catch{/* session storage may be disabled */}setProfileMenuOpen(false);setOfflineMode(false)}
   const reload = async () => {
     try {
       const [t,p,n,b,prefs] = await Promise.all([repositories.tasks.all(),repositories.projects.all(),repositories.notes.all(),repositories.bookmarks.all(),repositories.settings.get('preferences')])
@@ -87,12 +88,35 @@ function App() {
     } catch { setError('Local storage is unavailable. Check browser storage settings and try again.') }
     finally { setLoadingData(false) }
   }
-  useEffect(() => { void reload() }, [])
   useEffect(()=>{
-    if(!supabase)return
+    if(!supabase){void reload();return}
     let alive=true
-    void supabase.auth.getSession().then(({data})=>{if(alive){setCloudUser(data.session?.user??null);setCloudAuthReady(true)}})
-    const {data:{subscription}}=supabase.auth.onAuthStateChange((_event,session)=>{setCloudUser(session?.user??null);setOfflineMode(false)})
+    let initialized=false
+    let sessionGeneration=0
+    const applySession=async(session:Session|null)=>{
+      if(!alive)return
+      const applyGeneration=++sessionGeneration
+      const shouldReload=!initialized
+      const userId=session?.user.id??null
+      const nextScope=userId?`user:${userId}`:'offline'
+      const scopeChanged=getWorkspaceStorageScope()!==nextScope
+      if(scopeChanged){setCloudAuthReady(false);setLoadingData(true);stopCloudSync()}
+      await setDatabaseAccountScope(userId)
+      if(!alive||applyGeneration!==sessionGeneration)return
+      if(!initialized||scopeChanged){
+        const nextWorkspaces=getWorkspaces()
+        setWorkspaces(nextWorkspaces)
+        setActiveWorkspace(nextWorkspaces.find(item=>item.id===getActiveWorkspace().id)??getActiveWorkspace())
+        setWorkspacePickerOpen(!hasEnteredWorkspace(userId))
+      }
+      initialized=true
+      setCloudUser(session?.user??null)
+      setOfflineMode(false)
+      setCloudAuthReady(true)
+      if(scopeChanged||shouldReload)await reload()
+    }
+    void supabase.auth.getSession().then(({data})=>applySession(data.session)).catch(()=>{setCloudAuthReady(true);setError('Could not load your Supabase session. Check your connection and try again.')})
+    const {data:{subscription}}=supabase.auth.onAuthStateChange((_event,session)=>{void applySession(session).catch(()=>{if(alive){setCloudAuthReady(true);setError('Could not open this account’s private workspace storage. Check browser storage and try again.')}})})
     return()=>{alive=false;subscription.unsubscribe()}
   },[])
   useEffect(()=>{
@@ -158,8 +182,8 @@ function App() {
   const importData=async(file:File)=>{try{const parsed=JSON.parse(await file.text()) as {format?:string;version?:number;data?:Record<string,unknown[]>};if(parsed.format!=='lethargic-desk-backup'||parsed.version!==1||!parsed.data)throw new Error('Unsupported backup format.');const names=['tasks','projects','subtasks','milestones','calendarEvents','notes','knowledgeArticles','bookmarks','files','timeEntries','focusSessions','dailyPlans','tags','preferences','attendance'] as const;for(const name of names){const rows=parsed.data[name]??[];if(!Array.isArray(rows)||rows.some(r=>!r||typeof r!=='object'||typeof (r as {id?:unknown}).id!=='string'||typeof (r as {created_at?:unknown}).created_at!=='string'||typeof (r as {updated_at?:unknown}).updated_at!=='string'))throw new Error(`Invalid ${name} data.`)}const attendanceRows=(parsed.data.attendance??[]) as AttendanceRecord[];if(attendanceRows.length){const currentByDate=new Map((await getAttendanceRecords()).map(record=>[record.work_date,record]));parsed.data.attendance=attendanceRows.map(record=>{const existing=currentByDate.get(record.work_date);return existing?{...record,id:existing.id,created_at:existing.created_at}:record})};const fileRows=(parsed.data.files??[]) as (Partial<LocalFile>&{blob_base64?:string})[];parsed.data.files=fileRows.map(f=>{if(typeof f.blob_base64!=='string'||typeof f.name!=='string'||typeof f.mime_type!=='string')throw new Error('Invalid file content in backup.');const binary=atob(f.blob_base64),bytes=Uint8Array.from(binary,c=>c.charCodeAt(0));return {...f,blob:new Blob([bytes],{type:f.mime_type}),blob_base64:undefined}});if(!window.confirm('Restore this backup? Records with matching IDs, and attendance with matching work dates, will be replaced; other local records remain.'))return;await db.transaction('rw',names.map(n=>db.table(n)),async()=>{for(const name of names)await db.table(name).bulkPut(parsed.data![name]??[])});await reload()}catch(e){setError(e instanceof Error?e.message:'Could not import the backup.')}}
   const searchResults=[...tasks.filter(x=>`${x.title} ${x.description??''}`.toLowerCase().includes(query.trim().toLowerCase())).map(x=>({label:x.title,path:'/tasks',kind:'Task'})),...projects.filter(x=>x.name.toLowerCase().includes(query.trim().toLowerCase())).map(x=>({label:x.name,path:'/projects',kind:'Project'})),...notes.filter(x=>`${x.title} ${x.body}`.toLowerCase().includes(query.trim().toLowerCase())).map(x=>({label:x.title,path:'/notes',kind:'Note'})),...bookmarks.filter(x=>`${x.title} ${x.url}`.toLowerCase().includes(query.trim().toLowerCase())).map(x=>({label:x.title,path:'/bookmarks',kind:'Bookmark'}))].slice(0,8)
   if(!cloudAuthReady)return <div className="workspace-picker-backdrop"><section className="workspace-picker"><h1>Connecting to your account…</h1></section></div>
-  if(supabase&&!cloudUser&&!offlineMode)return <CloudAuthPage onOffline={()=>setOfflineMode(true)}/>
-  if(workspacePickerOpen)return <WorkspacePicker workspaces={workspaces} onSelect={handleSelectWorkspace} onCreate={handleCreateWorkspace} onCancel={()=>setWorkspacePickerOpen(false)} canCancel={hasEnteredWorkspace()}/>
+  if(supabase&&!cloudUser&&!offlineMode)return <CloudAuthPage onOffline={()=>setOfflineMode(true)} onSignupAccount={handleSignupAccount}/>
+  if(workspacePickerOpen)return <WorkspacePicker workspaces={workspaces} onSelect={handleSelectWorkspace} onCreate={handleCreateWorkspace} onCancel={()=>setWorkspacePickerOpen(false)} canCancel={hasEnteredWorkspace(cloudUser?.id??null)}/>
   return <div className="app-shell">
     {sidebarOpen&&<button className="mobile-scrim" onClick={()=>setSidebarOpen(false)} aria-label="Close menu"/>}
     <aside className={`sidebar ${sidebarOpen?'sidebar-open':''}`}><div className="brand"><div className="brand-mark">L</div><div><div className="brand-name">LETHARGIC<span>.</span></div><div className="brand-product">DESK / WORKSPACE</div></div><button className="icon-button sidebar-close" onClick={()=>setSidebarOpen(false)}><X size={17}/></button></div>
@@ -175,10 +199,31 @@ function App() {
         </Routes><footer className="app-footer"><span>LETHARGIC DESK <b>?</b> v0.1.0</span><span>Local-first workspace <span className="footer-dot">?</span></span></footer>
       </div></main></div>
 }
-function CloudAuthPage({onOffline}:{onOffline:()=>void}){
- const [username,setUsername]=useState(''),[password,setPassword]=useState(''),[mode,setMode]=useState<'sign_in'|'sign_up'>('sign_in'),[message,setMessage]=useState(''),[busy,setBusy]=useState(false)
- const submit=async(event:FormEvent)=>{event.preventDefault();if(!supabase){onOffline();return}const normalized=normalizeUsername(username);if(!/^[a-z0-9][a-z0-9._-]{2,23}$/.test(normalized)){setMessage('Username must be 3–24 characters: letters, numbers, dot, underscore or hyphen.');return}if(password.length<12){setMessage('Password must be at least 12 characters.');return}setBusy(true);setMessage('');try{if(mode==='sign_up'){const {error:signupError}=await supabase.functions.invoke('username-auth',{body:{username:normalized,password}});if(signupError)throw signupError}const {error:loginError}=await supabase.auth.signInWithPassword({email:usernameAuthEmail(normalized),password});if(loginError)throw loginError}catch(error){const context=(error as {context?:Response})?.context;if(context){try{const body=await context.clone().json() as {error?:string};if(body.error){setMessage(body.error);return}}catch{}}const errorMessage=error instanceof Error?error.message:'Authentication failed.';setMessage(mode==='sign_up'&&/failed to send a request to the edge function|failed to fetch|networkerror/i.test(errorMessage)?'Username sign-up is not deployed or reachable yet. Deploy the username-auth Supabase Edge Function and apply migration 003_username_auth.sql.':errorMessage)}finally{setBusy(false)}}
- return <div className="workspace-picker-backdrop"><section className="workspace-picker" aria-labelledby="cloud-auth-title"><div className="brand"><div className="brand-mark">L</div><div><div className="brand-name">LETHARGIC<span>.</span></div><div className="brand-product">DESK / CLOUD SYNC</div></div></div><h1 id="cloud-auth-title">{mode==='sign_in'?'Sign in to sync your work':'Create your account'}</h1><p>Use a username and password. Your account and synced workspace data are stored in Supabase.</p>{!supabase&&<p role="alert" className="form-message">Supabase is not configured. Set the public Supabase URL and publishable key.</p>}<form className="workspace-picker-form" onSubmit={submit}><label>Username<input type="text" autoComplete="username" minLength={3} maxLength={24} value={username} onChange={e=>setUsername(e.target.value)} pattern="[A-Za-z0-9][A-Za-z0-9._-]{2,23}" title="3–24 characters: letters, numbers, dot, underscore or hyphen" required/></label><label>Password<input type="password" autoComplete={mode==='sign_in'?'current-password':'new-password'} minLength={12} maxLength={128} value={password} onChange={e=>setPassword(e.target.value)} required/></label>{message&&<p role="status" className="form-message">{message}</p>}<button className="primary-button" disabled={busy||!supabase}>{busy?'Please wait…':mode==='sign_in'?'Sign in and sync':'Create account'}</button></form><button className="text-button" onClick={()=>{setMode(mode==='sign_in'?'sign_up':'sign_in');setMessage('')}}>{mode==='sign_in'?"Don't have an account? Create one":"Already have an account? Sign in"}</button><button className="text-button" onClick={onOffline}>Continue offline</button></section></div>
+function CloudAuthPage({onOffline,onSignupAccount}:{onOffline:()=>void;onSignupAccount:(userId:string)=>Promise<void>}){
+ const [username,setUsername]=useState(''),[password,setPassword]=useState(''),[currentlyWorking,setCurrentlyWorking]=useState(''),[companyName,setCompanyName]=useState(''),[joiningDate,setJoiningDate]=useState(''),[referralSource,setReferralSource]=useState(''),[mode,setMode]=useState<'sign_in'|'sign_up'>('sign_in'),[message,setMessage]=useState(''),[busy,setBusy]=useState(false)
+ const submit=async(event:FormEvent)=>{
+  event.preventDefault()
+  if(!supabase){onOffline();return}
+  const normalized=normalizeUsername(username)
+  if(!/^[a-z0-9][a-z0-9._-]{2,23}$/.test(normalized)){setMessage('Username must be 3–24 characters: letters, numbers, dot, underscore or hyphen.');return}
+  if(password.length<12){setMessage('Password must be at least 12 characters.');return}
+  setBusy(true);setMessage('')
+  try{
+   if(mode==='sign_up'){
+     const {error:signupError}=await supabase.functions.invoke('username-auth',{body:{username:normalized,password,currentlyWorking:currentlyWorking===''?null:currentlyWorking==='yes',companyName:currentlyWorking==='yes'?companyName.trim()||null:null,joiningDate:currentlyWorking==='yes'?joiningDate||null:null,referralSource:referralSource.trim()||null}})
+    if(signupError)throw signupError
+   }
+   const {data:loginData,error:loginError}=await supabase.auth.signInWithPassword({email:usernameAuthEmail(normalized),password})
+   if(loginError)throw loginError
+    if(mode==='sign_up'&&loginData.user)await onSignupAccount(loginData.user.id)
+  }catch(error){
+   const context=(error as {context?:Response})?.context
+    if(context){try{const body=await context.clone().json() as {error?:string};if(body.error){setMessage(body.error);return}}catch{/* use the SDK error below */}}
+   const errorMessage=error instanceof Error?error.message:'Authentication failed.'
+   setMessage(mode==='sign_up'&&/failed to send a request to the edge function|failed to fetch|networkerror/i.test(errorMessage)?'Username sign-up is not deployed or reachable yet. Deploy the username-auth Supabase Edge Function and apply the required database migrations.':errorMessage)
+  }finally{setBusy(false)}
+ }
+ return <div className="workspace-picker-backdrop"><section className="workspace-picker" aria-labelledby="cloud-auth-title"><div className="brand"><div className="brand-mark">L</div><div><div className="brand-name">LETHARGIC<span>.</span></div><div className="brand-product">DESK / CLOUD SYNC</div></div></div><h1 id="cloud-auth-title">{mode==='sign_in'?'Sign in to sync your work':'Create your account'}</h1><p>Each account gets its own Personal workspace. You can add a company workspace later. Your data syncs only to this account.</p>{!supabase&&<p role="alert" className="form-message">Supabase is not configured. Set the public Supabase URL and publishable key.</p>}<form className="workspace-picker-form" onSubmit={submit}><label>Username<input type="text" autoComplete="username" minLength={3} maxLength={24} value={username} onChange={e=>setUsername(e.target.value)} pattern="[A-Za-z0-9][A-Za-z0-9._-]{2,23}" title="3–24 characters: letters, numbers, dot, underscore or hyphen" required/></label><label>Password<input type="password" autoComplete={mode==='sign_in'?'current-password':'new-password'} minLength={12} maxLength={128} value={password} onChange={e=>setPassword(e.target.value)} required/></label>{mode==='sign_up'&&<fieldset className="signup-personalization"><legend>Personalization (all optional)</legend><label>Are you currently working?<select value={currentlyWorking} onChange={e=>setCurrentlyWorking(e.target.value)}><option value="">Prefer not to say</option><option value="yes">Yes</option><option value="no">No</option></select></label>{currentlyWorking==='yes'&&<><label>Which company? (optional)<input autoComplete="organization" maxLength={120} value={companyName} onChange={e=>setCompanyName(e.target.value)} placeholder="Company name"/></label><label>Joining date (optional)<input type="date" value={joiningDate} onChange={e=>setJoiningDate(e.target.value)}/></label></>}<label>Where did you hear about us? (optional)<input maxLength={200} value={referralSource} onChange={e=>setReferralSource(e.target.value)} placeholder="Search, social media, friend..."/></label></fieldset>}{message&&<p role="status" className="form-message">{message}</p>}<button className="primary-button" disabled={busy||!supabase}>{busy?'Please wait…':mode==='sign_in'?'Sign in and sync':'Create account'}</button></form><button className="text-button" onClick={()=>{setMode(mode==='sign_in'?'sign_up':'sign_in');setMessage('')}}>{mode==='sign_in'?"Don't have an account? Create one":"Already have an account? Sign in"}</button><button className="text-button" onClick={onOffline}>Continue offline</button></section></div>
 }
 function SecurityPage({onImport}:{onImport:(file:File)=>void}){return <><PageHeading eyebrow="SETTINGS / DATA" title="Your data and sync" description="Data is stored locally and syncs to your Supabase account when signed in."/><div className="panel"><div className="panel-header"><div><h2>Backup and restore</h2><p>Export a versioned JSON backup or merge a validated backup into this workspace.</p></div><ShieldCheck size={18}/></div><div className="create-inline"><button className="primary-button" onClick={()=>document.querySelector<HTMLInputElement>('#backup-import')?.click()}>Import backup</button><input id="backup-import" hidden type="file" accept="application/json,.json" onChange={e=>{const f=e.target.files?.[0];if(f)onImport(f);e.currentTarget.value=''}}/></div><p className="analytics-caption">Sync is account-scoped. Company workspaces sync across devices signed into the same account; this does not grant access to other users.</p></div></>}
 
@@ -321,7 +366,7 @@ function FilesPage(){
 function WorkspacePicker({workspaces,onSelect,onCreate,onCancel,canCancel}:{workspaces:Workspace[];onSelect:(workspace:Workspace)=>void;onCreate:(name:string,role:string,startDate:string)=>Workspace;onCancel:()=>void;canCancel:boolean}){
  const [name,setName]=useState(''),[role,setRole]=useState(''),[startDate,setStartDate]=useState(new Date().toISOString().slice(0,10)),[error,setError]=useState('')
  const create=(event:FormEvent)=>{event.preventDefault();try{const workspace=onCreate(name,role,startDate);onSelect(workspace)}catch(e){setError(e instanceof Error?e.message:'Could not create this company workspace.')}}
- return <div className="workspace-picker-backdrop"><section className="workspace-picker" aria-labelledby="workspace-picker-title"><div className="brand"><div className="brand-mark">L</div><div><div className="brand-name">LETHARGIC<span>.</span></div><div className="brand-product">DESK / WORKSPACE</div></div></div><h1 id="workspace-picker-title">Choose a workspace</h1><p>Select a workspace to open its isolated local data. Google login and shared company accounts are still pending.</p><div className="workspace-picker-list">{[...workspaces].sort((a,b)=>a.type==='personal'?-1:b.type==='personal'?1:a.name.localeCompare(b.name)).map(workspace=><button className="workspace-picker-option" key={workspace.id} onClick={()=>onSelect(workspace)}><div className="workspace-avatar">{workspace.type==='company'?<Building2 size={15}/>:workspace.name.slice(0,1).toUpperCase()}</div><span><b>{workspace.type==='personal'?'Personal':workspace.name}</b><small>{workspace.type==='company'?'Company workspace · isolated on this device':'Personal workspace · isolated on this device'}</small></span></button>)}</div><form className="workspace-picker-form" onSubmit={create}><h2>Set up another company</h2><label>Company name<input value={name} onChange={e=>setName(e.target.value)} placeholder="Company name" required/></label><label>Your current role (optional)<input value={role} onChange={e=>setRole(e.target.value)} placeholder="e.g. Product designer"/></label>{role&&<label>Role start date<input type="date" value={startDate} onChange={e=>setStartDate(e.target.value)} required/></label>}{error&&<div className="workspace-picker-error" role="alert">{error}</div>}<button className="primary-button" type="submit">Create and open company</button></form>{canCancel&&<button className="text-button" onClick={onCancel}>Return to current workspace</button>}</section></div>
+  return <div className="workspace-picker-backdrop"><section className="workspace-picker" aria-labelledby="workspace-picker-title"><div className="brand"><div className="brand-mark">L</div><div><div className="brand-name">LETHARGIC<span>.</span></div><div className="brand-product">DESK / WORKSPACE</div></div></div><h1 id="workspace-picker-title">Choose a workspace</h1><p>Personal and each company have separate tasks, files, attendance and settings. Company workspaces belong to your account; shared team access is not enabled.</p><div className="workspace-picker-list">{[...workspaces].sort((a,b)=>a.type==='personal'?-1:b.type==='personal'?1:a.name.localeCompare(b.name)).map(workspace=><button className="workspace-picker-option" key={workspace.id} onClick={()=>onSelect(workspace)}><div className="workspace-avatar">{workspace.type==='company'?<Building2 size={15}/>:workspace.name.slice(0,1).toUpperCase()}</div><span><b>{workspace.type==='personal'?'Personal':workspace.name}</b><small>{workspace.type==='company'?'Private company workspace':'Private Personal workspace'}</small></span></button>)}</div><form className="workspace-picker-form" onSubmit={create}><h2>Set up another company</h2><label>Company name<input value={name} onChange={e=>setName(e.target.value)} placeholder="Company name" required/></label><label>Your current role (optional)<input value={role} onChange={e=>setRole(e.target.value)} placeholder="e.g. Product designer"/></label>{role&&<label>Role start date<input type="date" value={startDate} onChange={e=>setStartDate(e.target.value)} required/></label>}{error&&<div className="workspace-picker-error" role="alert">{error}</div>}<button className="primary-button" type="submit">Create and open company</button></form>{canCancel&&<button className="text-button" onClick={onCancel}>Return to current workspace</button>}</section></div>
 }
 
 function WorkspacesPage({workspaces,activeWorkspace,onCreate,onSave,onSwitch}:{workspaces:Workspace[];activeWorkspace:Workspace;onCreate:(name:string,role:string,startDate:string)=>Workspace;onSave:(workspace:Workspace)=>void;onSwitch:(workspace:Workspace)=>void}){

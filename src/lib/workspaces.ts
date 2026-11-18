@@ -16,6 +16,7 @@ export interface Workspace {
 
 const workspaceKey = 'lethargic-desk:workspaces:v1'
 const activeKey = 'lethargic-desk:active-workspace:v1'
+let accountScope = 'offline'
 const personalWorkspace: Workspace = { id: 'personal', type: 'personal', name: 'Personal', roles: [], created_at: '2026-01-01T00:00:00.000Z' }
 const validDate = (value: string) => { if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false; const date = new Date(`${value}T00:00:00.000Z`); return Number.isFinite(date.getTime()) && date.toISOString().slice(0, 10) === value }
 
@@ -23,17 +24,29 @@ function storage(): Storage | null {
   try { return globalThis.localStorage ?? null } catch { return null }
 }
 
+function scopedKey(key: string): string {
+  return accountScope === 'offline' ? key : `${key}:${accountScope}`
+}
+
+export function setWorkspaceStorageScope(userId: string | null): void {
+  accountScope = userId ? `user:${userId}` : 'offline'
+}
+
+export function getWorkspaceStorageScope(): string {
+  return accountScope
+}
+
 export function getWorkspaces(): Workspace[] {
   const store = storage()
   if (!store) return [personalWorkspace]
   try {
-    const parsed = JSON.parse(store.getItem(workspaceKey) ?? 'null') as Workspace[] | null
+    const parsed = JSON.parse(store.getItem(scopedKey(workspaceKey)) ?? 'null') as Workspace[] | null
     const list = Array.isArray(parsed) ? parsed.filter((item) => item && typeof item.id === 'string' && typeof item.name === 'string' && (item.type === 'personal' || item.type === 'company')) : []
     if (!list.some((item) => item.id === 'personal')) list.unshift(personalWorkspace)
-    store.setItem(workspaceKey, JSON.stringify(list))
+    store.setItem(scopedKey(workspaceKey), JSON.stringify(list))
     return list
   } catch {
-    store.setItem(workspaceKey, JSON.stringify([personalWorkspace]))
+    store.setItem(scopedKey(workspaceKey), JSON.stringify([personalWorkspace]))
     return [personalWorkspace]
   }
 }
@@ -43,12 +56,12 @@ export function replaceWorkspaces(workspaces: Workspace[]): void {
   if(!store)return
   const safe=workspaces.filter(item=>item&&typeof item.id==='string'&&typeof item.name==='string'&&(item.type==='personal'||item.type==='company'))
   if(!safe.some(item=>item.id==='personal'))safe.unshift(personalWorkspace)
-  store.setItem(workspaceKey,JSON.stringify(safe))
+  store.setItem(scopedKey(workspaceKey),JSON.stringify(safe))
 }
 
 export function getActiveWorkspaceId(): string {
   const list = getWorkspaces()
-  const stored = storage()?.getItem(activeKey)
+  const stored = storage()?.getItem(scopedKey(activeKey))
   return stored && list.some((item) => item.id === stored) ? stored : 'personal'
 }
 
@@ -58,25 +71,26 @@ export function getActiveWorkspace(): Workspace {
 }
 
 export function getWorkspaceDatabaseName(workspaceId = getActiveWorkspaceId()): string {
-  return workspaceId === 'personal' ? 'lethargic-desk' : `lethargic-desk-workspace-${workspaceId}`
+  const account = accountScope === 'offline' ? '' : `-account-${accountScope.slice('user:'.length)}`
+  return workspaceId === 'personal' ? `lethargic-desk${account}` : `lethargic-desk${account}-workspace-${workspaceId}`
 }
 
 export function selectWorkspace(id: string): void {
   if (!getWorkspaces().some((item) => item.id === id)) throw new Error('Workspace not found.')
-  storage()?.setItem(activeKey, id)
+  storage()?.setItem(scopedKey(activeKey), id)
 }
 
-export function createCompanyWorkspace(name: string, roleTitle: string, startDate: string): Workspace {
+export function createCompanyWorkspace(name: string, roleTitle: string, startDate: string, workspaceId: string = crypto.randomUUID()): Workspace {
   const cleanName = name.trim()
   if (!cleanName) throw new Error('Enter a company name.')
   if (roleTitle.trim() && !validDate(startDate)) throw new Error('Choose a valid role start date.')
   const now = new Date().toISOString()
   const workspace: Workspace = {
-    id: crypto.randomUUID(), type: 'company', name: cleanName, roles: roleTitle.trim() ? [{ id: crypto.randomUUID(), title: roleTitle.trim(), start_date: startDate, end_date: null }] : [], created_at: now, updated_at: now,
+    id: workspaceId, type: 'company', name: cleanName, roles: roleTitle.trim() ? [{ id: crypto.randomUUID(), title: roleTitle.trim(), start_date: startDate, end_date: null }] : [], created_at: now, updated_at: now,
   }
   const store = storage()
   if (!store) throw new Error('Workspace storage is unavailable.')
-  store.setItem(workspaceKey, JSON.stringify([...getWorkspaces(), workspace]))
+  store.setItem(scopedKey(workspaceKey), JSON.stringify([...getWorkspaces(), workspace]))
   return workspace
 }
 
@@ -87,7 +101,7 @@ export function saveWorkspace(workspace: Workspace): void {
   if (!store) throw new Error('Workspace storage is unavailable.')
   const list = getWorkspaces()
   if (!list.some((item) => item.id === workspace.id)) throw new Error('Workspace not found.')
-  store.setItem(workspaceKey, JSON.stringify(list.map((item) => item.id === workspace.id ? {...workspace,updated_at:new Date().toISOString()} : item)))
+  store.setItem(scopedKey(workspaceKey), JSON.stringify(list.map((item) => item.id === workspace.id ? {...workspace,updated_at:new Date().toISOString()} : item)))
 }
 
 export function getEmploymentTenure(startDate: string, endDate: string | null, todayDate = new Date().toISOString().slice(0, 10)) {

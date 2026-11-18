@@ -1,9 +1,9 @@
 import 'fake-indexeddb/auto'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { db, WorkspaceDatabase } from './database'
-import { createCompanyWorkspace, getActiveWorkspaceId, getEmploymentTenure, getWorkspaceDatabaseName, getWorkspaces, selectWorkspace } from './workspaces'
+import { createCompanyWorkspace, getActiveWorkspaceId, getEmploymentTenure, getWorkspaceDatabaseName, getWorkspaces, selectWorkspace, setWorkspaceStorageScope } from './workspaces'
 
-beforeEach(() => localStorage.clear())
+beforeEach(() => { setWorkspaceStorageScope(null); localStorage.clear() })
 
 describe('isolated local workspaces', () => {
   it('keeps the existing local database mapped to Personal', () => {
@@ -29,6 +29,27 @@ describe('isolated local workspaces', () => {
     expect(await db.tasks.where('id').equals('company-only').count()).toBe(0)
     companyDb.close()
     await companyDb.delete()
+  })
+
+  it('keeps each signed-in account separate from legacy offline and other account workspaces', () => {
+    const offlineCompany = createCompanyWorkspace('Legacy offline company', '', '')
+    const offlineDb = getWorkspaceDatabaseName('personal')
+
+    setWorkspaceStorageScope('account-a')
+    expect(getWorkspaces().map(workspace => workspace.name)).toEqual(['Personal'])
+    const accountACompany = createCompanyWorkspace('Company A', '', '')
+    const accountADb = getWorkspaceDatabaseName('personal')
+    expect(accountADb).not.toBe(offlineDb)
+
+    setWorkspaceStorageScope('account-b')
+    expect(getWorkspaces().map(workspace => workspace.name)).toEqual(['Personal'])
+    const accountBDb = getWorkspaceDatabaseName('personal')
+    expect(accountBDb).not.toBe(accountADb)
+
+    setWorkspaceStorageScope('account-a')
+    expect(getWorkspaces().map(workspace => workspace.name)).toEqual(['Personal', 'Company A'])
+    expect(getWorkspaces().some(workspace => workspace.id === offlineCompany.id)).toBe(false)
+    expect(getWorkspaces().some(workspace => workspace.id === accountACompany.id)).toBe(true)
   })
 
   it('calculates inclusive workday totals and calendar tenure', () => {
