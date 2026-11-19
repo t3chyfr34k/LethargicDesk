@@ -67,7 +67,7 @@ Radicale is an optional CalDAV server managed by the app's local launcher. The p
 .\radicale\start.ps1
 ```
 
-Setup prints a generated Radicale username and password once; save them. CORS is configured for `http://localhost:5173` by default. If Vite starts on another port, edit `Access-Control-Allow-Origin` in `.radicale-data\config` to match the exact origin and restart the dev launcher. The server is local-only and this configuration is for development; use HTTPS and a deployment-specific CORS origin before making a CalDAV server reachable over a network.
+Setup prints a generated Radicale username and password once; save them. The dev launcher lets Vite select an available port (so an existing server on 5173 does not prevent startup) and updates Radicale's allowed local origin to match. The server is local-only and this configuration is for development; use HTTPS and a deployment-specific CORS origin before making a CalDAV server reachable over a network.
 
 Then open **Integrations → Calendar sync · Radicale** and enter the generated credentials and collection URL printed by setup (`http://127.0.0.1:5232/lethargicdesk/calendar/`). Test the connection, then choose **Sync calendar now**. New connections default to import-only; choose export-only or two-way sync when appropriate. Linked event edits and deletions are synchronized; remote deletions are kept locally to avoid accidental data loss. Calendar credentials are remembered only when that option is enabled.
 
