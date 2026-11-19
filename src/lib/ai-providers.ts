@@ -16,8 +16,8 @@ export async function requestAI(connection: AIConnection, messages: AIMessage[],
 
   if (provider === 'gemini') {
     const modelPath = model.trim().replace(/^models\//, '')
-    response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(modelPath)}:generateContent?key=${encodeURIComponent(apiKey.trim())}`, {
-      method: 'POST', headers: { 'Content-Type': 'application/json' }, signal,
+    response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(modelPath)}:generateContent`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': apiKey.trim() }, signal,
       body: JSON.stringify({
         systemInstruction: { parts: [{ text: 'You are Lethargic Desk AI, a helpful assistant. Be clear, accurate, and concise.' }] },
         contents: messages.map(message => ({ role: message.role === 'assistant' ? 'model' : 'user', parts: [{ text: message.content }] })),

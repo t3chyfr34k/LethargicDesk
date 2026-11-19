@@ -63,7 +63,7 @@ async function pushLocal():Promise<void> {
       for(const item of rows){
         assertCurrent()
         const payload=await serialize(tableName,item,user,workspace,assertCurrent)
-        cloudRows.push({user_id:user.id,workspace_id:workspace,collection:tableName,record_id:String(item.id),payload,updated_at:String(item.updated_at??new Date().toISOString()),deleted:false})
+        cloudRows.push({user_id:user.id,workspace_id:workspace,collection:tableName,record_id:String(item.id),payload,updated_at:String(item.updated_at??new Date().toISOString()),deleted:Boolean(item.deleted_at)})
       }
       for(let offset=0;offset<cloudRows.length;offset+=200){assertCurrent();const {error}=await supabase.from('workspace_records').upsert(cloudRows.slice(offset,offset+200),{onConflict:'user_id,workspace_id,collection,record_id'});if(error)throw error;assertCurrent()}
     }
