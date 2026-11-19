@@ -12,10 +12,13 @@ Your work. Your space. Your control. A local-first personal workspace by Letharg
 
 ```powershell
 npm install
+npm run setup:radicale
 npm run dev
 ```
 
-Open the local URL printed by Vite. Without Supabase settings, the app works offline and stores workspace data in this browser's IndexedDB. When configured and signed into a Supabase account, only that account's workspace data syncs between devices.
+The one-time Radicale setup prints a generated calendar username and password; save them for **Integrations → Calendar sync · Radicale**. `npm run dev` starts the Vite app and the local Radicale server together, and Ctrl+C stops both. Open the local URL printed by Vite. To run just the frontend, use `npm run dev:web`; to run Radicale separately, use `radicale\start.ps1`.
+
+The app stores workspace data in this browser's IndexedDB when offline. If Supabase is configured, account authentication and cross-device sync still use that Supabase instance; the local Radicale server hosts calendar data only.
 
 ## Build and preview
 
@@ -57,20 +60,19 @@ You can enable due-task reminders, task-timer completion alerts, and a daily bri
 
 ## Calendar sync with Radicale
 
-Radicale is an optional, separate CalDAV server. The project includes a Windows local setup that installs Radicale 3.9.2 in an isolated Python virtual environment, binds it only to `127.0.0.1`, configures bcrypt password authentication and persistent local storage, and creates a starter calendar. Run these commands from the repository root in PowerShell:
+Radicale is an optional CalDAV server managed by the app's local launcher. The project setup installs Radicale 3.9.2 in an isolated Python virtual environment, binds it only to `127.0.0.1`, configures bcrypt password authentication and persistent local storage, and creates a starter calendar. After the one-time setup above, `npm run dev` launches Radicale with Lethargic Desk. To start Radicale by itself from the repository root in PowerShell:
 
 ```powershell
 .\radicale\setup.ps1
 .\radicale\start.ps1
 ```
 
-The first command prints a generated Radicale username and password once; save them. It asks for the Lethargic Desk origin and defaults to `http://localhost:5173`. If Vite starts on another port, edit `Access-Control-Allow-Origin` in `.radicale-data\config` to match the exact origin and restart Radicale. The server is local-only and this configuration is for development; use HTTPS and a deployment-specific CORS origin before making a CalDAV server reachable over a network.
+Setup prints a generated Radicale username and password once; save them. CORS is configured for `http://localhost:5173` by default. If Vite starts on another port, edit `Access-Control-Allow-Origin` in `.radicale-data\config` to match the exact origin and restart the dev launcher. The server is local-only and this configuration is for development; use HTTPS and a deployment-specific CORS origin before making a CalDAV server reachable over a network.
 
 Then open **Integrations → Calendar sync · Radicale** and enter the generated credentials and collection URL printed by setup (`http://127.0.0.1:5232/lethargicdesk/calendar/`). Test the connection, then choose **Sync calendar now**. New connections default to import-only; choose export-only or two-way sync when appropriate. Linked event edits and deletions are synchronized; remote deletions are kept locally to avoid accidental data loss. Calendar credentials are remembered only when that option is enabled.
 
 The setup follows Radicale's [v3 quick start](https://radicale.org/v3.html#simple-5-minute-setup), but keeps authentication enabled: the docs' `--auth-type none` example accepts any username and password and is explicitly marked insecure. The server configuration uses Radicale's [htpasswd authentication](https://radicale.org/v3.html#authentication), filesystem storage and configurable HTTP headers for browser CORS. Runtime data and password hashes stay under the ignored `.radicale-data` directory; the plaintext password is not written to disk.
 
-Open **Integrations → Calendar sync · Radicale** and enter the full CalDAV calendar collection URL, username, and password. Test the connection, then choose **Sync calendar now** to import events and publish workspace events. Linked event edits and deletions are sent on later syncs. Events deleted directly in Radicale are left in the workspace to avoid deleting local events unexpectedly. The Radicale server must allow HTTPS browser requests from the Lethargic Desk origin, including CalDAV `PROPFIND`, `PUT`, and `DELETE` methods and the `Authorization` header. Calendar credentials are stored locally only when “Remember credentials on this device” is enabled.
 # Username authentication setup
 
 Username accounts use Supabase Auth for password hashing and sessions. The app never stores or sends plaintext passwords to a database table. Supabase Auth uses an internal, non-deliverable address for its email identifier; users only enter usernames in the app.

@@ -84,7 +84,7 @@ def create_calendar(password: str) -> None:
 
 def main() -> None:
     if USERS.exists():
-        print(f"Radicale is already configured. Credentials are in the local password manager you used during setup.")
+        print("Radicale is already configured; this setup keeps the existing password hash and does not reset credentials.")
         print("Local server URL: http://127.0.0.1:5232")
         print(f"Calendar collection URL: http://127.0.0.1:5232/{USERNAME}/{CALENDAR}/")
         return
